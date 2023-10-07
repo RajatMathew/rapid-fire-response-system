@@ -2,49 +2,38 @@ import serial
 import pynmea2
 
 
-
-
-
-#----- A simple TCP client program in Python using send() function -----
-
 import socket
 
+ 
 
+# Create a stream based socket(i.e, a TCP socket)
 
-# Create a client socket
+# operating on IPv4 addressing scheme
 
-clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 
+ 
 
+# Bind and listen
 
-# Connect to the server
+serverSocket.bind(("0.0.0.0",9090));
 
-clientSocket.connect(("192.168.0.116",9090));
-
-
-
-# Send data to server
-
-data = "Hello Server!";
-
-clientSocket.send(data.encode());
+serverSocket.listen();
 
 
 
-# Receive data from server
-
-dataFromServer = clientSocket.recv(1024);
+# Accept connections
 
 
+(clientConnected, clientAddress) = serverSocket.accept();
 
-# Print to the console
+print("Accepted a connection request from %s:%s"%(clientAddress[0], clientAddress[1]));
 
-print(dataFromServer.decode());
-
+clientConnected.send("Hello Client!".encode());
 
 
 def sendViaSocket(msg):
-    clientSocket.send(msg.encode());
+    clientConnected.send(msg.encode());
 
 
 
