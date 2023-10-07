@@ -1,42 +1,28 @@
 import serial
 import pynmea2
+import pyrebase
+import time
 
+config = {
+  "apiKey": "AIzaSyAxgFUnEC86-EV4vTdP2OF2PyZpqfezR3A",
+  "authDomain": "nasa-d9822.firebaseapp.com",
+  "databaseURL": "https://nasa-d9822-default-rtdb.firebaseio.com",
+  "projectId": "nasa-d9822",
+  "storageBucket": "nasa-d9822.appspot.com",
+  "messagingSenderId": "803691422915",
+  "appId": "1:803691422915:web:347015fb0c204e6b79ae76",
+  "measurementId": "G-W8R1ZBYC3P"
+}
 
-import socket
+firebase = pyrebase.initialize_app(config)
 
- 
+db = firebase.database()
 
-# Create a stream based socket(i.e, a TCP socket)
+# data = {"name": "Mortimer 'Morty' Smith"}
 
-# operating on IPv4 addressing scheme
+# db.child("users").child("Morty")
 
-serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-
- 
-
-# Bind and listen
-
-serverSocket.bind(("0.0.0.0",9090));
-
-serverSocket.listen();
-
-
-
-# Accept connections
-
-
-(clientConnected, clientAddress) = serverSocket.accept();
-
-print("Accepted a connection request from %s:%s"%(clientAddress[0], clientAddress[1]));
-
-clientConnected.send("Hello Client!".encode());
-
-
-def sendViaSocket(msg):
-    clientConnected.send(msg.encode());
-
-
-
+# db.child("users").push(data)
 
 
 # Define the serial port and baud rate (adjust based on your setup)
@@ -64,13 +50,17 @@ try:
                 latitude = msg.latitude
                 longitude = msg.longitude
 
-                latLng = str(msg.latitude) + "," + str(msg.longitude)
+                latLng = str(msg.latitude) + ", " + str(msg.longitude)
                 print(latLng)
+
+                data = {"timestamp": time.time(), "location": latLng}
+
+                db.child("gpsLocation").push(data)
                 # print(type(latLng))
                 
                 # Print the coordinates
                 # print(f"Latitude: {latitude}, Longitude: {longitude}")
-                sendViaSocket(str(latLng))
+                # sendViaSocket(str(latLng))
             except pynmea2.ParseError:
                 pass  # Ignore invalid NMEA sentences
 
