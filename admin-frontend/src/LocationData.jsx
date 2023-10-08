@@ -37,12 +37,12 @@ export default function LocationData() {
     if (!mapInitialized && !map && data) {
       const mapInstance = L.map(mapRef.current).setView([data.location.split(",")[0], data.location.split(",")[1]], 17);
 
-      L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "Map data &copy; Esri",
         maxZoom: 18,
       }).addTo(mapInstance);
 
-      L.marker([data.location.split(",")[0], data.location.split(",")[1]]).addTo(mapInstance);
+      L.marker([data.location.split(",")[0], data.location.split(",")[1]]).addTo(mapInstance).bindTooltip("Drone is here").openTooltip();
       
       setMap(mapInstance);
       setMapInitialized(true);

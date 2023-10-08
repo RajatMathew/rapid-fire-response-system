@@ -44,7 +44,7 @@ export class VideosController {
     return this.videosService.changeStatus(body);
   }
 
-  @Post('valid')
+  @Get('valid')
   async validatedVideo() {
     return this.videosService.validatedVideos();
   }
